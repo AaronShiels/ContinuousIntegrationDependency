@@ -1,0 +1,38 @@
+name: publish
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  publish:
+    name: publish
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Set up Poetry
+      uses: abatilo/actions-poetry@v2.0.0
+      with:
+        poetry-version: 1.1.10
+    - name: Install dependencies
+      run: poetry install
+    - name: Run unit tests
+      run: poetry run pytest
+    - name: Version release package
+      if: ${{ github.event_name == 'pull_request' }}
+      run: poetry version 1.0.0.${{ github.run_number }}
+    - name: Version pre-release package
+      if: ${{ github.event_name == 'pull_request' }}
+      run: poetry version 1.0.0.${{ github.run_number }}-dev
+    - name: Build package
+      run: poetry build

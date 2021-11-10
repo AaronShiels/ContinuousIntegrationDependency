@@ -29,10 +29,12 @@ jobs:
     - name: Run unit tests
       run: poetry run pytest
     - name: Version release package
-      if: ${{ github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'push' }}
       run: poetry version 1.0.0.${{ github.run_number }}
     - name: Version pre-release package
       if: ${{ github.event_name == 'pull_request' }}
-      run: poetry version 1.0.0.${{ github.run_number }}-dev
+      run: poetry version 1.0.0.${{ github.run_number }}.dev0
     - name: Build package
       run: poetry build
+    - name: Publish package
+      run: poetry publish --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }}

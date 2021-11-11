@@ -19,22 +19,44 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.9    
+    - name: Set up Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 17
+        registry-url: https://npm.pkg.github.com
+        scope: '@aaronshiels'
     - name: Set up Poetry
       uses: abatilo/actions-poetry@v2.0.0
       with:
         poetry-version: 1.1.10
-    - name: Install dependencies
+    - name: Install Python dependencies
       run: poetry install
-    - name: Run unit tests
+    - name: Run Python tests
       run: poetry run pytest
-    - name: Version release package
+    - name: Install Node dependencies
+      run: npm install
+    - name: Run JS tests
+      run: npm run test
+    - name: Version Python package (release)
       if: ${{ github.event_name == 'push' }}
       run: poetry version 1.0.0.${{ github.run_number }}
-    - name: Version pre-release package
+    - name: Version Python package (pre-release)
       if: ${{ github.event_name == 'pull_request' }}
       run: poetry version 1.0.0.${{ github.run_number }}.dev0
-    - name: Build package
+    - name: Version Node package (release)
+      if: ${{ github.event_name == 'push' }}
+      run: npm version --commit-hooks false --git-tag-version false 1.0.${{ github.run_number }}
+    - name: Version Node package (pre-release)
+      if: ${{ github.event_name == 'pull_request' }}
+      run: npm version --commit-hooks false --git-tag-version false 1.0.${{ github.run_number }}-alpha.0
+    - name: Build Python package
       run: poetry build
-    - name: Publish package
+    - name: Build Node package
+      run: npm run build
+    - name: Publish Python package
       run: poetry publish --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }}
+    - name: Publish Node package
+      run: npm publish
+      env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

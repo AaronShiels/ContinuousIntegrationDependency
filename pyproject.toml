@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ContinuousIntegrationDependency"
-version = "1.2.3.4"
+version = "1.0.0"
 description = ""
 authors = ["Aaron Shiels <aaron.shiels@outlook.com>"]
 

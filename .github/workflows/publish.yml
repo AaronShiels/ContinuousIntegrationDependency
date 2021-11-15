@@ -40,10 +40,10 @@ jobs:
       run: npm run test
     - name: Version Python package (release)
       if: ${{ github.event_name == 'push' }}
-      run: poetry version 1.0.0.${{ github.run_number }}
+      run: poetry version 1.0.${{ github.run_number }}
     - name: Version Python package (pre-release)
       if: ${{ github.event_name == 'pull_request' }}
-      run: poetry version 1.0.0.${{ github.run_number }}.dev0
+      run: poetry version 1.0.${{ github.run_number }}.dev0
     - name: Version Node package (release)
       if: ${{ github.event_name == 'push' }}
       run: npm version --commit-hooks false --git-tag-version false 1.0.${{ github.run_number }}

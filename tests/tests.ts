@@ -5,6 +5,6 @@ test("it works", () => {
 	expect(true).toBeTruthy();
 });
 
-test("it no works", () => {
-	expect(true).toBeFalsy();
+test("it works 2", () => {
+	expect(true).toBeTruthy();
 });
